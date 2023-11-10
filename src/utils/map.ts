@@ -19,6 +19,7 @@ export function toLatLon(coordinates: number[]) {
 
 
 interface Point {
+    _id: string | undefined
     titulo: string;
     tipo: string;
     data: Date;
@@ -36,22 +37,28 @@ function showInfos(point: Point) {
     data.textContent = `Data: ${new Date(point.data).toLocaleString()}`;
     return { titulo, tipo, data }
 }
-
+let idToDelete: string = ''
 export function showSinglePoint(point: Point) {
-    let m: L.Marker
+    let marker: L.Marker
     if (!point.geom.coordinates) {
-        m = L.marker(toLatLon(point.geom)).addTo(map);
-    } else { 
-        m = L.marker(toLatLon(point.geom.coordinates)).addTo(map)
+        marker = L.marker(toLatLon(point.geom)).addTo(map);
+    } else {
+        marker = L.marker(toLatLon(point.geom.coordinates)).addTo(map)
     }
     const infos = showInfos(point)
-    m.bindPopup(`
+    marker.bindPopup(`
   ${infos.titulo.textContent}<br>
   ${infos.tipo.textContent}<br>
   ${infos.data.textContent}<br>
   <button class="delete" type="button">Deletar Ocorrencia</button>`)
-    m.on('click', () => {
-        m.openPopup()
+    marker.on('click', () => {
+        marker.openPopup()
+        // pegando o id da ocorrencia pra deletar:
+        // variavel global idToDelete = point._id
+        // atualiza sempre que abrir um popup.
+        // só passar essa variavel pro metodo delete
+        idToDelete = point._id as string
+        console.log(idToDelete)
     })
 }
 async function savePoint(infos: any, coordinates: number[]) {
@@ -60,8 +67,6 @@ async function savePoint(infos: any, coordinates: number[]) {
             ...infos,
             geom: coordinates
         }
-
-        console.log(point);
 
         const resp = await fetch(`http://localhost:3000/ocorrencias`, {
             method: 'POST',
@@ -96,7 +101,6 @@ async function getPoints(): Promise<Point[]> {
         if (!resp.ok) {
             throw new Error('ERROR IN REQUEST');
         }
-
         const locals = await resp.json();
 
         return locals as Point[];
