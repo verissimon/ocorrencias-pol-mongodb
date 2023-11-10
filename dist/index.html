@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro de Ocorrências Policiais - API</title>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <link
+      rel="shortcut icon"
+      href="./assets/fav-icon.svg"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="./assets/style.css" />
+  </head>
+  <body>
+    <div id="main">
+      <div id="api">
+        <div id="header">
+          <image id="oficial" src="assets/policia.png"></image>
+          <h1>Registro de ocorrências policiais</h1>
+        </div>
+
+        <div id="form">
+          <form method="post">
+            <label for="title">Título:</label>
+            <input type="text" id="titulo" />
+
+            <label for="type">Tipo da ocorrência:</label>
+            <input type="text" id="tipo" />
+
+            <label for="date">Dia e hora:</label>
+            <input type="datetime-local" id="data" />
+
+            <button id="register" type="button">Registrar</button>
+
+          </form>
+        </div>
+      </div>
+
+      <div id="map"></div>
+
+      <div id="popup">
+        <div id="infos">
+          <p id="titulo"></p>
+          <p id="tipo"></p>
+          <p id="data"></p>
+        </div>
+        <img src="./assets/infos.svg" width="25px" />
+      </div>
+    </div>
+
+    <script type="module" src="bundle.js"></script>
+  </body>
+</html>
