@@ -32,16 +32,26 @@ type occorenciaToDelete = undefined | {
 }
 let toDelete: occorenciaToDelete = undefined
 
-function showInfos(point: Point) {
-
-    const titulo = document.createElement('p') as Element;
-    const tipo = document.createElement('p') as Element;
-    const data = document.createElement('p') as Element;
+function createPopupContent(point: Point) {
+    const div = document.createElement('div')
+    const titulo = document.createElement('p')
+    const tipo = document.createElement('p')
+    const data = document.createElement('p')
+    const button = document.createElement('button')
 
     titulo.textContent = `Título: ${point.titulo}`;
     tipo.textContent = `Tipo: ${point.tipo}`;
     data.textContent = `Data: ${new Date(point.data).toLocaleString()}`;
-    return { titulo, tipo, data }
+    button.type = 'button';
+    button.className = 'delete';
+    button.textContent = 'Deletar Ocorrencia';
+
+    div.appendChild(titulo);
+    div.appendChild(tipo);
+    div.appendChild(data);
+    div.appendChild(button)
+
+    return div
 }
 
 export function showSinglePoint(point: Point) {
@@ -51,12 +61,8 @@ export function showSinglePoint(point: Point) {
     } else {
         marker = L.marker(toLatLon(point.geom.coordinates)).addTo(map)
     }
-    const infos = showInfos(point)
-    marker.bindPopup(`
-  ${infos.titulo.textContent}<br>
-  ${infos.tipo.textContent}<br>
-  ${infos.data.textContent}<br>
-  <button class="delete" type="button">Deletar Ocorrencia</button>`)
+    const popupContent = createPopupContent(point)
+    marker.bindPopup(popupContent)
     marker.on('click', () => {
         marker.openPopup()
         // pegando infos da ocorrencia pra deletar:
