@@ -26,6 +26,12 @@ interface Point {
     geom: any;
 }
 
+type occorenciaToDelete = undefined | {
+    marker: L.Marker,
+    point: Point
+}
+let toDelete: occorenciaToDelete = undefined
+
 function showInfos(point: Point) {
 
     const titulo = document.createElement('p') as Element;
@@ -37,7 +43,7 @@ function showInfos(point: Point) {
     data.textContent = `Data: ${new Date(point.data).toLocaleString()}`;
     return { titulo, tipo, data }
 }
-let idToDelete: string = ''
+
 export function showSinglePoint(point: Point) {
     let marker: L.Marker
     if (!point.geom.coordinates) {
@@ -53,12 +59,15 @@ export function showSinglePoint(point: Point) {
   <button class="delete" type="button">Deletar Ocorrencia</button>`)
     marker.on('click', () => {
         marker.openPopup()
-        // pegando o id da ocorrencia pra deletar:
-        // variavel global idToDelete = point._id
-        // atualiza sempre que abrir um popup.
-        // só passar essa variavel pro metodo delete
-        idToDelete = point._id as string
-        console.log(idToDelete)
+        // pegando infos da ocorrencia pra deletar:
+        // variavel global toDelete
+        // atualiza sempre depois de abrir um popup.
+        // passar essa variavel pro metodo delete
+        toDelete = { marker, point }
+        console.log(toDelete.point._id)
+        // deletar ocorrencia deve:
+        // 1. remover o marcador do mapa. toDelete.marker.remove()
+        // 2. remover dados do banco. passando toDelete.point._id
     })
 }
 async function savePoint(infos: any, coordinates: number[]) {
