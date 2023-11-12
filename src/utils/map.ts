@@ -19,7 +19,7 @@ export function toLatLon(coordinates: number[]) {
 
 
 interface Point {
-    _id: string | undefined
+    _id: string | undefined;
     titulo: string;
     tipo: string;
     data: Date;
@@ -40,8 +40,14 @@ function createPopupContent(point: Point) {
     const button = document.createElement('button')
 
     titulo.textContent = `Título: ${point.titulo}`;
+    titulo.style.fontWeight = 'bold';
+
     tipo.textContent = `Tipo: ${point.tipo}`;
+    tipo.style.fontWeight = 'bold';
+
     data.textContent = `Data: ${new Date(point.data).toLocaleString()}`;
+    data.style.fontWeight = 'bold';
+
     button.type = 'button';
     button.className = 'delete';
     button.textContent = 'Deletar Ocorrencia';
@@ -49,33 +55,67 @@ function createPopupContent(point: Point) {
     div.appendChild(titulo);
     div.appendChild(tipo);
     div.appendChild(data);
-    div.appendChild(button)
+    div.appendChild(button);
 
     return div
 }
 
+export async function deleteOccurrence(toDelete: {marker: L.Marker, point: Point}){
+    const { marker, point } = toDelete;
+
+    try{
+    //deleta marcador do mapa
+    map.removeLayer(marker)
+
+    if (point && point._id) {
+    const resp = await fetch(`http://localhost:3000/ocorrencias/${point._id}`,{
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        })
+        if (!resp.ok) {
+            console.error('Erro ao deletar ocorrência.');
+        }
+        console.log(`Ocorrência ${point._id} deletada.`);
+    }
+
+}   catch (error) {
+      alert('ERROR: ' + error);
+    }
+}
+
 export function showSinglePoint(point: Point) {
     let marker: L.Marker
+
     if (!point.geom.coordinates) {
         marker = L.marker(toLatLon(point.geom)).addTo(map);
-    } else {
+    } 
+    else {
         marker = L.marker(toLatLon(point.geom.coordinates)).addTo(map)
     }
     const popupContent = createPopupContent(point)
     marker.bindPopup(popupContent)
     marker.on('click', () => {
         marker.openPopup()
-        // pegando infos da ocorrencia pra deletar:
-        // variavel global toDelete
-        // atualiza sempre depois de abrir um popup.
-        // passar essa variavel pro metodo delete
-        toDelete = { marker, point }
-        console.log(toDelete.point._id)
-        // deletar ocorrencia deve:
-        // 1. remover o marcador do mapa. toDelete.marker.remove()
-        // 2. remover dados do banco. passando toDelete.point._id
-    })
+
+        toDelete = { marker, point };
+        console.log(toDelete.point._id);
+
+        const deleteButton = popupContent.querySelector('.delete');
+        deleteButton?.addEventListener('click', () => {
+            if (toDelete) { 
+                // Verificação para evitar toDelete indefinido
+                deleteOccurrence(toDelete);
+                marker.closePopup();
+            } else {
+                console.error('toDelete é indefinido.');
+            }
+        });
+        })
 }
+
 async function savePoint(infos: any, coordinates: number[]) {
     try {
         const point: Point = {

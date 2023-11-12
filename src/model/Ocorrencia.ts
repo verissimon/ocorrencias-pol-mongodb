@@ -1,4 +1,5 @@
 import { model, Schema } from "mongoose"
+
 const ocorrenciaSchema = new Schema(
   {
     titulo: {

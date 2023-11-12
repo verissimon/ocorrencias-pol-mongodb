@@ -1,5 +1,5 @@
 import express from 'express';
-import { create, list } from '../controller/Ocorrencia.controller';
+import { create, list, deleta } from '../controller/Ocorrencia.controller';
 
 const ocorrenciaRouter = express.Router();
 
@@ -8,5 +8,8 @@ ocorrenciaRouter.post('/', create);
 
 //READ
 ocorrenciaRouter.get('/', list);
+
+//DELETE
+ocorrenciaRouter.delete('/:id', deleta);
 
 export default ocorrenciaRouter;
