@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import Ocorrencia from '../model/Ocorrencia';
-import mongoose from 'mongoose';
+import {Types} from 'mongoose';
 
 export async function create(req: Request, res: Response) {
     new Ocorrencia({
+        _id: new Types.ObjectId(req.body._id),
         titulo: req.body.titulo,
         tipo: req.body.tipo,
         data: new Date(req.body.data),
@@ -26,7 +27,7 @@ export async function deleta(req:Request, res: Response){
     const ocorrenciaId = req.params.id;
 
     try {
-        const isValidObjectId = mongoose.Types.ObjectId.isValid(ocorrenciaId);
+        const isValidObjectId = Types.ObjectId.isValid(ocorrenciaId);
         if (!isValidObjectId) {
             return res.status(400).json({ message: 'ID de ocorrência inválido' });
         }

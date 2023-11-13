@@ -1,5 +1,5 @@
 import * as L from 'leaflet'
-
+import { Types } from 'mongoose';
 export const map = L.map('map').setView([-6.89, -38.56], 15);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -119,6 +119,7 @@ export function showSinglePoint(point: Point) {
 async function savePoint(infos: any, coordinates: number[]) {
     try {
         const point: Point = {
+            _id: new Types.ObjectId(),
             ...infos,
             geom: coordinates
         }
