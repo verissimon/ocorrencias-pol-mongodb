@@ -29,6 +29,11 @@ export async function deleta(req:Request, res: Response){
     const ocorrenciaId = req.params.id;
 
     try {
+        const isValidObjectId = Types.ObjectId.isValid(ocorrenciaId);
+        if (!isValidObjectId) {
+            return res.status(400).json({ message: 'ID de ocorrência inválido' });
+        }
+
         const deletedOcorrencia = await Ocorrencia.findByIdAndDelete(ocorrenciaId);
 
         if (!deletedOcorrencia) {
