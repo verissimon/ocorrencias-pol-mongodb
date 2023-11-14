@@ -27,9 +27,14 @@ const btnRegister = document.querySelector('#register')
 
 btnRegister?.addEventListener('click', (event) => {
     const ocorrencia = getFormValues();
-
-    savePoint(ocorrencia, toLngLat(markers[markers.length - 1].getLatLng()));
-})
+    try{
+        const coordinates = markers[markers.length - 1].getLatLng()
+        savePoint(ocorrencia, toLngLat(coordinates));
+    }
+    catch(error) {
+        alert('Selecione um local no mapa antes de registrar');
+    }
+});
 
 function showPoints() {
     getPoints().then(pnts => {

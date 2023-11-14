@@ -2,6 +2,7 @@ import { model, Schema } from "mongoose"
 
 const ocorrenciaSchema = new Schema(
   {
+    _id: {type: Schema.Types.ObjectId},
     titulo: {
       type: String,
       required: true
@@ -34,7 +35,7 @@ const ocorrenciaSchema = new Schema(
         required: true
       }
     }
-  }
+  }, { _id: false }
 )
 const Ocorrencia = model('Ocorrencia', ocorrenciaSchema)
 

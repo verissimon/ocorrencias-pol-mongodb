@@ -1,4 +1,5 @@
 import * as L from 'leaflet'
+import { Types } from 'mongoose';
 
 export const map = L.map('map').setView([-6.89, -38.56], 15);
 
@@ -64,9 +65,7 @@ export async function deleteOccurrence(toDelete: {marker: L.Marker, point: Point
     const { marker, point } = toDelete;
 
     try{
-    //deleta marcador do mapa
-    map.removeLayer(marker)
-
+    
     if (point && point._id) {
     const resp = await fetch(`http://localhost:3000/ocorrencias/${point._id}`,{
         method: 'DELETE',
@@ -76,8 +75,10 @@ export async function deleteOccurrence(toDelete: {marker: L.Marker, point: Point
         },
         })
         if (!resp.ok) {
-            console.error('Erro ao deletar ocorrência.');
+           throw new Error('ao deletar ocorrência.');
         }
+        //deleta marcador do mapa
+        map.removeLayer(marker)
         console.log(`Ocorrência ${point._id} deletada.`);
     }
 
@@ -86,7 +87,7 @@ export async function deleteOccurrence(toDelete: {marker: L.Marker, point: Point
     }
 }
 
-export function showSinglePoint(point: Point) {
+export async function showSinglePoint(point: Point) {
     let marker: L.Marker
 
     if (!point.geom.coordinates) {
@@ -97,7 +98,7 @@ export function showSinglePoint(point: Point) {
     }
     const popupContent = createPopupContent(point)
     marker.bindPopup(popupContent)
-    marker.on('click', () => {
+    marker.on('click', async () => {
         marker.openPopup()
 
         toDelete = { marker, point };
@@ -119,6 +120,7 @@ export function showSinglePoint(point: Point) {
 async function savePoint(infos: any, coordinates: number[]) {
     try {
         const point: Point = {
+            _id: new Types.ObjectId().toString(),
             ...infos,
             geom: coordinates
         }
