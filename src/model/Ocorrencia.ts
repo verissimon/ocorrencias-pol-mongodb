@@ -36,7 +36,6 @@ const ocorrenciaSchema = new Schema(
       }
     }
   }, { _id: false }
-  }, { _id: false }
 )
 const Ocorrencia = model('Ocorrencia', ocorrenciaSchema)
 

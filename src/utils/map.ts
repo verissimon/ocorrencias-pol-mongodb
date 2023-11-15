@@ -80,6 +80,7 @@ export async function deleteOccurrence(toDelete: {marker: L.Marker, point: Point
         //deleta marcador do mapa
         map.removeLayer(marker)
         console.log(`Ocorrência ${point._id} deletada.`);
+        alert(`Ocorrência deletada com sucesso`)
     }
 
 }   catch (error) {
