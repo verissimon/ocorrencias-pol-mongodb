@@ -49,3 +49,44 @@ export async function list(req: Request, res: Response) {
     const ocorrencias = await Ocorrencia.find({})
     res.send(ocorrencias)
 }
+
+export const update = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { titulo, tipo, data } = req.body
+
+    const updatedDoc = {
+        titulo,
+        tipo,
+        data,
+        updatedAt: new Date()
+    }
+
+    try {
+        const docAntes = await Ocorrencia.findById(id)
+
+        if (docAntes) {
+            // se o campo a atualizar nao estiver preenchido,
+            // mantem os valores antigos
+            if (updatedDoc.titulo === '') {
+                updatedDoc.titulo = docAntes.titulo
+            }
+            if (updatedDoc.tipo === '') {
+                updatedDoc.tipo = docAntes.tipo
+            }
+            if (updatedDoc.data === '') {
+                updatedDoc.data = docAntes.data
+            }
+            const docNovo = await Ocorrencia.findByIdAndUpdate(id, updatedDoc,
+                { returnDocument: 'after' })
+            return res.status(200).json({ docNovo, docAntes })
+        } else {
+            return res.status(400).send({
+                message: `Ocorrencia com Id ${id} nao encontrado`
+            })
+        }
+
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ error: "Erro ao tentar atualizar ocorrencia" })
+    }
+}
