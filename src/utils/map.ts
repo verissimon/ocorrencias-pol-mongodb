@@ -88,8 +88,15 @@ function createPopupContent(point: Point) {
         
         // Verificação para evitar toDelete indefinido
         if (toDelete) { 
+            const marker = toDelete.marker;
+            marker.closePopup();
+            marker.unbindPopup();
+
             UpdateOccurrence(toDelete);
-            showSinglePoint(point);
+
+            const newPopupContent = createPopupContent(point);
+            marker.bindPopup(newPopupContent);
+            marker.openPopup();
         } else {
             console.error('toDelete é indefinido.');
         }
