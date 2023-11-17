@@ -44,12 +44,17 @@ function createPopupContent(point: Point) {
 
     titulo.textContent = `Título: ${point.titulo}`;
     titulo.style.fontWeight = 'bold';
+    titulo.style.fontSize = "12px";
 
     tipo.textContent = `Tipo: ${point.tipo}`;
     tipo.style.fontWeight = 'bold';
+    tipo.style.fontSize = "12px";
+
 
     data.textContent = `Data: ${new Date(point.data).toLocaleString()}`;
     data.style.fontWeight = 'bold';
+    data.style.fontSize = "12px";
+
 
     updateAlert.textContent = '* Para atualizar uma ocorrência, insira os novos valores no formulário e clique no botão "Atualizar ocorrência" em seguida.'
 
@@ -66,7 +71,29 @@ function createPopupContent(point: Point) {
     div.appendChild(data);
     div.appendChild(button);
     div.appendChild(buttonUpdate);
-    div.appendChild(updateAlert)
+    div.appendChild(updateAlert);
+
+
+    button?.addEventListener('click', () => {
+        if (toDelete) { 
+            // Verificação para evitar toDelete indefinido
+            deleteOccurrence(toDelete);
+            
+        } else {
+            console.error('toDelete é indefinido.');
+        }
+    });
+
+    buttonUpdate?.addEventListener('click', () =>{
+        
+        // Verificação para evitar toDelete indefinido
+        if (toDelete) { 
+            UpdateOccurrence(toDelete);
+            showSinglePoint(point);
+        } else {
+            console.error('toDelete é indefinido.');
+        }
+    })
 
     return div
 }
@@ -101,8 +128,8 @@ export async function deleteOccurrence(toDelete: {marker: L.Marker, point: Point
 
 }
 
-export async function UpdateOccurrence(toUpdate: {point: Point}){
-    const { point } = toUpdate;
+export async function UpdateOccurrence(toUpdate: {marker: L.Marker, point: Point}){
+    const { marker, point } = toUpdate;
 
     try{
     
@@ -135,6 +162,7 @@ export async function UpdateOccurrence(toUpdate: {point: Point}){
 }   catch (error) {
       alert('ERROR: ' + error);
     }
+    marker.closePopup();
 }
 
 export async function showSinglePoint(point: Point) {
@@ -153,9 +181,6 @@ export async function showSinglePoint(point: Point) {
 
         toDelete = { marker, point };
         console.log(toDelete.point._id);
-
-        const deleteButton = popupContent.querySelector('.delete');
-        const updateButton = popupContent.querySelector('.update');
         
         const form = document.querySelectorAll("input");
     
@@ -163,28 +188,6 @@ export async function showSinglePoint(point: Point) {
         form[0].value = point.titulo;
         form[1].value = point.tipo;
         form[2].value = new Date(point.data).toISOString().slice(0, 16);
-
-        deleteButton?.addEventListener('click', () => {
-            if (toDelete) { 
-                // Verificação para evitar toDelete indefinido
-                deleteOccurrence(toDelete);
-                
-            } else {
-                console.error('toDelete é indefinido.');
-            }
-        });
-
-        updateButton?.addEventListener('click', () =>{
-            
-            // Verificação para evitar toDelete indefinido
-            if (toDelete) { 
-                UpdateOccurrence(toDelete);
-                marker.closePopup();
-                showSinglePoint(point);
-            } else {
-                console.error('toDelete é indefinido.');
-            }
-        })
         })
 }
 
