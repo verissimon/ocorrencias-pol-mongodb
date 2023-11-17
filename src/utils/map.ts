@@ -39,6 +39,8 @@ function createPopupContent(point: Point) {
     const tipo = document.createElement('p')
     const data = document.createElement('p')
     const button = document.createElement('button')
+    const buttonUpdate = document.createElement('button')
+    const updateAlert = document.createElement('p');
 
     titulo.textContent = `Título: ${point.titulo}`;
     titulo.style.fontWeight = 'bold';
@@ -49,14 +51,22 @@ function createPopupContent(point: Point) {
     data.textContent = `Data: ${new Date(point.data).toLocaleString()}`;
     data.style.fontWeight = 'bold';
 
+    updateAlert.textContent = '* Para atualizar uma ocorrência, insira os novos valores no formulário e clique no botão "Atualizar ocorrência" em seguida.'
+
     button.type = 'button';
     button.className = 'delete';
-    button.textContent = 'Deletar Ocorrencia';
+    button.textContent = 'Deletar ocorrencia';
+
+    buttonUpdate.type = 'button';
+    buttonUpdate.className = 'update';
+    buttonUpdate.textContent = 'Atualizar ocorrencia';
 
     div.appendChild(titulo);
     div.appendChild(tipo);
     div.appendChild(data);
     div.appendChild(button);
+    div.appendChild(buttonUpdate);
+    div.appendChild(updateAlert)
 
     return div
 }
@@ -77,10 +87,49 @@ export async function deleteOccurrence(toDelete: {marker: L.Marker, point: Point
         if (!resp.ok) {
            throw new Error('ao deletar ocorrência.');
         }
+        marker.closePopup();
+
         //deleta marcador do mapa
         map.removeLayer(marker)
         console.log(`Ocorrência ${point._id} deletada.`);
         alert(`Ocorrência deletada com sucesso`)
+    }
+
+}   catch (error) {
+      alert('ERROR: ' + error);
+    }
+
+}
+
+export async function UpdateOccurrence(toUpdate: {point: Point}){
+    const { point } = toUpdate;
+
+    try{
+    
+    if (point && point._id) {
+
+        const titulo = (document.getElementById('titulo') as HTMLInputElement)?.value;
+        const tipo = (document.getElementById('tipo') as HTMLInputElement)?.value;
+        const data = (document.getElementById('data') as HTMLInputElement)?.value;
+
+        if (titulo) point.titulo = titulo;
+        if (tipo) point.tipo = tipo;
+        if (data) point.data = new Date(data);
+
+    const resp = await fetch(`http://localhost:3000/ocorrencias/${point._id}`,{
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(point) 
+        })
+        if (!resp.ok) {
+           throw new Error('ao atualizar ocorrência');
+        }
+
+        console.log(`Ocorrência ${point._id} atualizada.`);
+        alert(`Ocorrência atualizada com sucesso`);
     }
 
 }   catch (error) {
@@ -106,15 +155,36 @@ export async function showSinglePoint(point: Point) {
         console.log(toDelete.point._id);
 
         const deleteButton = popupContent.querySelector('.delete');
+        const updateButton = popupContent.querySelector('.update');
+        
+        const form = document.querySelectorAll("input");
+    
+        //mostra os valores do marcador no input
+        form[0].value = point.titulo;
+        form[1].value = point.tipo;
+        form[2].value = new Date(point.data).toISOString().slice(0, 16);
+
         deleteButton?.addEventListener('click', () => {
             if (toDelete) { 
                 // Verificação para evitar toDelete indefinido
                 deleteOccurrence(toDelete);
-                marker.closePopup();
+                
             } else {
                 console.error('toDelete é indefinido.');
             }
         });
+
+        updateButton?.addEventListener('click', () =>{
+            
+            // Verificação para evitar toDelete indefinido
+            if (toDelete) { 
+                UpdateOccurrence(toDelete);
+                marker.closePopup();
+                showSinglePoint(point);
+            } else {
+                console.error('toDelete é indefinido.');
+            }
+        })
         })
 }
 

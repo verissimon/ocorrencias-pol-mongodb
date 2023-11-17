@@ -12,6 +12,7 @@ ocorrenciaRouter.get('/', list);
 //DELETE
 ocorrenciaRouter.delete('/:id', deleta);
 
+//UPDATE
 ocorrenciaRouter.put('/:id', update)
 
 export default ocorrenciaRouter;
