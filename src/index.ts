@@ -25,11 +25,11 @@ map.on('click', (evt) => {
 
 const btnRegister = document.querySelector('#register')
 
-btnRegister?.addEventListener('click', (event) => {
+btnRegister?.addEventListener('click', async (event) => {
     const ocorrencia = getFormValues();
     try{
         const coordinates = markers[markers.length - 1].getLatLng()
-        savePoint(ocorrencia, toLngLat(coordinates));
+        await savePoint(ocorrencia, toLngLat(coordinates));
     }
     catch(error) {
         alert('Selecione um local no mapa antes de registrar');
@@ -37,9 +37,9 @@ btnRegister?.addEventListener('click', (event) => {
 });
 
 function showPoints() {
-    getPoints().then(pnts => {
+    getPoints().then(async (pnts) => {
         for (const p of pnts) {
-            showSinglePoint(p)
+            await showSinglePoint(p)
         }
     }).catch(err => {
         console.error(err);
