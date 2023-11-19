@@ -27,11 +27,11 @@ interface Point {
     geom: any;
 }
 
-type occorenciaToDelete = undefined | {
+type TOcorrenciaMapa = undefined | {
     marker: L.Marker,
     point: Point
 }
-let toDelete: occorenciaToDelete = undefined
+let selectedOcrr: TOcorrenciaMapa = undefined
 
 function createPopupContent(point: Point) {
     const div = document.createElement('div')
@@ -74,101 +74,102 @@ function createPopupContent(point: Point) {
     div.appendChild(updateAlert);
 
 
-    button?.addEventListener('click', () => {
-        if (toDelete) { 
-            // Verificação para evitar toDelete indefinido
-            deleteOccurrence(toDelete);
-            
-        } else {
+    button?.addEventListener('click', async () => {
+        if(!selectedOcrr){
             console.error('toDelete é indefinido.');
+            return
+        }
+        const deletou = await deleteOccurrence(selectedOcrr)
+        if (deletou) {
+            const marker = selectedOcrr.marker;
+            marker.closePopup();
+            map.removeLayer(marker)
         }
     });
 
-    buttonUpdate?.addEventListener('click', async () =>{
-        
-        // Verificação para evitar toDelete indefinido
-        if (toDelete) { 
-            const marker = toDelete.marker;
-            marker.closePopup();
-            
-            await UpdateOccurrence(toDelete);
+    buttonUpdate?.addEventListener('click', async () => {
 
+        // Verificação para evitar toDelete indefinido
+        if (!selectedOcrr) {
+            console.error('toDelete é indefinido.');
+            return
+        }
+        const atualizou = await UpdateOccurrence(selectedOcrr)
+        if (atualizou) {
+            const marker = selectedOcrr.marker;
+            marker.closePopup();
             const newPopupContent = createPopupContent(point);
             marker.bindPopup(newPopupContent);
             marker.openPopup();
-        } else {
-            console.error('toDelete é indefinido.');
         }
     })
 
     return div
 }
 
-export async function deleteOccurrence(toDelete: {marker: L.Marker, point: Point}){
-    const { marker, point } = toDelete;
+export async function deleteOccurrence(toDelete: { marker: L.Marker, point: Point }) {
+    const { point } = toDelete;
 
-    try{
-    
-    if (point && point._id) {
-    const resp = await fetch(`http://localhost:3000/ocorrencias/${point._id}`,{
-        method: 'DELETE',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        })
-        if (!resp.ok) {
-           throw new Error('ao deletar ocorrência.');
+    try {
+
+        if (point && point._id) {
+            const resp = await fetch(`http://localhost:3000/ocorrencias/${point._id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+            if (!resp.ok) {
+                throw new Error('ao deletar ocorrência.');
+            }
+
+            console.log(`Ocorrência ${point._id} deletada.`);
+            alert(`Ocorrência deletada com sucesso`)
+            return true
         }
-        marker.closePopup();
-
-        //deleta marcador do mapa
-        map.removeLayer(marker)
-        console.log(`Ocorrência ${point._id} deletada.`);
-        alert(`Ocorrência deletada com sucesso`)
+        return false
+    } catch (error) {
+        alert('ERROR: ' + error);
+        return false
     }
-
-}   catch (error) {
-      alert('ERROR: ' + error);
-    }
-
 }
 
-export async function UpdateOccurrence(toUpdate: {marker: L.Marker, point: Point}){
-    const { marker, point } = toUpdate;
+export async function UpdateOccurrence(toUpdate: { marker: L.Marker, point: Point }) {
+    const { point } = toUpdate;
 
-    try{
-    
-    if (point && point._id) {
+    try {
 
-        const titulo = (document.getElementById('titulo') as HTMLInputElement)?.value;
-        const tipo = (document.getElementById('tipo') as HTMLInputElement)?.value;
-        const data = (document.getElementById('data') as HTMLInputElement)?.value;
+        if (point && point._id) {
 
-        if (titulo) point.titulo = titulo;
-        if (tipo) point.tipo = tipo;
-        if (data) point.data = new Date(data);
+            const titulo = (document.getElementById('titulo') as HTMLInputElement)?.value;
+            const tipo = (document.getElementById('tipo') as HTMLInputElement)?.value;
+            const data = (document.getElementById('data') as HTMLInputElement)?.value;
 
-    const resp = await fetch(`http://localhost:3000/ocorrencias/${point._id}`,{
-        method: 'PUT',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(point) 
-        })
-        if (!resp.ok) {
-           throw new Error('ao atualizar ocorrência');
+            if (titulo) point.titulo = titulo;
+            if (tipo) point.tipo = tipo;
+            if (data) point.data = new Date(data);
+
+            const resp = await fetch(`http://localhost:3000/ocorrencias/${point._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(point)
+            })
+            if (!resp.ok) {
+                throw new Error('ao atualizar ocorrência');
+            }
+            console.log(`Ocorrência ${point._id} atualizada.`);
+            alert(`Ocorrência atualizada com sucesso`);
+            return true
         }
-
-        console.log(`Ocorrência ${point._id} atualizada.`);
-        alert(`Ocorrência atualizada com sucesso`);
+        return false
+    } catch (error) {
+        alert('ERROR: ' + error);
+        return false
     }
-
-}   catch (error) {
-      alert('ERROR: ' + error);
-    }
-
 }
 
 export async function showSinglePoint(point: Point) {
@@ -176,7 +177,7 @@ export async function showSinglePoint(point: Point) {
 
     if (!point.geom.coordinates) {
         marker = L.marker(toLatLon(point.geom)).addTo(map);
-    } 
+    }
     else {
         marker = L.marker(toLatLon(point.geom.coordinates)).addTo(map)
     }
@@ -186,8 +187,8 @@ export async function showSinglePoint(point: Point) {
     marker.on('click', async () => {
         marker.getPopup()?.openPopup();
 
-        toDelete = { marker, point };
-        console.log(toDelete.point._id);
+        selectedOcrr = { marker, point };
+        console.log(selectedOcrr.point._id);
         
         const titulo = document.querySelector('#titulo') as HTMLInputElement;
         const tipo = document.querySelector("#tipo") as HTMLSelectElement
@@ -222,7 +223,7 @@ async function savePoint(infos: any, coordinates: number[]) {
         }
         alert('SUCESS');
         markers[markers.length - 1].remove()
-        showSinglePoint(point)
+        await showSinglePoint(point)
 
     } catch (error) {
         alert('ERROR: ' + error);
