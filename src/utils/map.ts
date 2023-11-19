@@ -84,15 +84,14 @@ function createPopupContent(point: Point) {
         }
     });
 
-    buttonUpdate?.addEventListener('click', () =>{
+    buttonUpdate?.addEventListener('click', async () =>{
         
         // Verificação para evitar toDelete indefinido
         if (toDelete) { 
             const marker = toDelete.marker;
             marker.closePopup();
-            marker.unbindPopup();
-
-            UpdateOccurrence(toDelete);
+            
+            await UpdateOccurrence(toDelete);
 
             const newPopupContent = createPopupContent(point);
             marker.bindPopup(newPopupContent);
@@ -169,7 +168,7 @@ export async function UpdateOccurrence(toUpdate: {marker: L.Marker, point: Point
 }   catch (error) {
       alert('ERROR: ' + error);
     }
-    marker.closePopup();
+
 }
 
 export async function showSinglePoint(point: Point) {
@@ -183,18 +182,21 @@ export async function showSinglePoint(point: Point) {
     }
     const popupContent = createPopupContent(point)
     marker.bindPopup(popupContent)
+
     marker.on('click', async () => {
-        marker.openPopup()
+        marker.getPopup()?.openPopup();
 
         toDelete = { marker, point };
         console.log(toDelete.point._id);
         
-        const form = document.querySelectorAll("input");
+        const titulo = document.querySelector('#titulo') as HTMLInputElement;
+        const tipo = document.querySelector("#tipo") as HTMLSelectElement
+        const data = document.querySelector("#data") as HTMLInputElement
     
         //mostra os valores do marcador no input
-        form[0].value = point.titulo;
-        form[1].value = point.tipo;
-        form[2].value = new Date(point.data).toISOString().slice(0, 16);
+        titulo.value = point.titulo;
+        tipo.value = point.tipo;
+        data.value = new Date(point.data).toISOString().slice(0, 16);
         })
 }
 

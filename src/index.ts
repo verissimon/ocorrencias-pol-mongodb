@@ -1,14 +1,16 @@
 import { savePoint, getPoints, map, markers, toLngLat, showSinglePoint } from './utils/map';
 import { marker } from 'leaflet';
 
-const form = document.querySelectorAll('input');
+const form = document.querySelectorAll('input, select');
 
 function getFormValues() {
     const obj: { [key: string]: string } = {};
 
     form.forEach((element) => {
-        obj[element.id] = element.value;
-    })
+        if ('value' in element) {
+            obj[element.id] = (element as HTMLInputElement).value;
+        }
+    });
 
     return obj;
 }

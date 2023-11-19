@@ -30,7 +30,14 @@
             <input type="text" id="titulo" />
 
             <label for="type">Tipo da ocorrência:</label>
-            <input type="text" id="tipo" />
+            <select name="tipos" id="tipo">
+              <option value="Homicidio">Homicídio</option>
+              <option value="Assalto">Assalto</option>
+              <option value="Latrocinio">Latrocínio</option>
+              <option value="Difamacao">Difamação</option>
+              <option value="Sonegacao">Sonegação fiscal</option>
+              <option value="Outro">Outro</option>
+            </select>
 
             <label for="date">Dia e hora:</label>
             <input type="datetime-local" id="data" />
