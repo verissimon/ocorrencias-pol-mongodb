@@ -22,7 +22,7 @@ html{
   max-height: 100vh;
 }
 
-#api, #lista-ocorrencias {
+#api{
   width: 35%;
   text-align: center;
   margin-top: 1%;
@@ -48,8 +48,8 @@ h1 {
 }
 
 #form {
-  padding-top: 10%;
-  text-align: left;
+  padding-top: 13%;
+  text-align: center;
   margin: 20px;
 }
 
@@ -66,12 +66,12 @@ input, select{
   background-color: #F0F0F0;
   border-radius: 5px;
   font-size: 1.3rem;
-  max-width: 250px;
-  min-width: 100px;
-  display: block;
+  max-width: 200px;
+  min-width: 50px;
+  display: inline-block;
 }
 
-#register, #mostraOcorrencias{
+#register{
   height: 40px;
   font-size: 1.2rem;
   background-color: #F0F0F0;
@@ -79,70 +79,11 @@ input, select{
   border: #F0F0F0 solid;
   font-weight: 400;
   cursor: pointer;
-}
-
-#mostraOcorrencias {
-  display: inline-block;
-  padding: 5px;
-  margin-top: 20px;
-  margin-left: 10px;
-  text-decoration: none;
-  height: fit-content;
-  color: black;
-}
-
-#mostraOcorrencias:hover, #register:hover {
-  background-color: darkgray;
-  border: darkgray solid;
-}
-
-#register{
-  margin: 10px;
-}
-
-#popup #infos {
-  display: none;
-  width: 100%;
-  margin-bottom: 10px;
-  
-}
-
-#infos {
-  left: 0;
-  text-align: left;
-  width: 100%;
+  margin: 20px;
 }
 
 #main #popup img {
   width: 30px;
-}
-
-#main #popup #infos.visible {
-  display: initial;
-}
-
-#main #popup #infos p{
-  width: 230px;
-  margin-left: 5px;
-  width: calc(100% - 10px);
-  font-size: medium;
-}
-
-#popup {
-  position: absolute;
-  z-index: 2;
-  right: 0;
-  max-width: 260px;
-  max-height: calc(100vh - 20px);
-  background-color: #F0F0F0;
-  flex-direction: column;
-  justify-content: center;
-  display: flex;
-  align-items: flex-end; 
-  padding: 10px;
-  border-radius: 10px;
-  border: 2px solid rgba(149, 149, 149, 0.5);
-  box-sizing: border-box;
 }
 
 ul{
@@ -161,11 +102,4 @@ ul{
 li{
   padding: 6px;
   text-overflow: clip;
-}
-
-#ocorrenciasInfos{
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  max-height: 100%;
 }
