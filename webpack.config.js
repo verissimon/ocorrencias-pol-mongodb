@@ -16,10 +16,10 @@ module.exports = {
   },
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'src','public'),
   },
   devServer: {
-    static: path.join(__dirname, "dist"),
+    static: path.join(__dirname, 'src','public'),
     compress: true,
     port: 8080,
     open: true

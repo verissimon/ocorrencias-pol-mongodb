@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+}
+
+label {
+  display: inline-block;
+  width: 185px;
+}
+
+input {
+  width: 45%;
+  color: black;
+}
+
+#main {
+  display: flex;
+  background-color: #213555;
+}
+
+#main #api {
+  margin: 20px;
+  width: 35%;
+  color: #F0F0F0;
+}
+
+#main #api #form {
+  margin-top: 20px;
+}
+
+#main #api #header {
+  display: flex;
+  align-items: center;
+}
+#main #api #header h1 {
+  margin-left: 20px;
+  width: 140px;
+  font-size: 32px;
+}
+#main #api #header img {
+  width: 75px;
+}
+
+#main #map {
+  width: 65%;
+  height: 100vh;
+  color: black;
+}
+
+#main #popup {
+  display: flex;
+  justify-content: center;
+  align-items:start;
+
+  position: fixed;
+  z-index: 9999;
+  
+  right: 20px;
+  margin-top: 20px;
+  
+  width: fit-content;
+  height: fit-content;
+  
+  border-radius: 8px;
+  border: #808080 solid 2px;
+  background-color: #fff;
+  transition: 400ms;
+}
+#main #popup #infos {
+  display: none;
+  margin: 5px;
+}
+#main #popup #infos.visible {
+  display: initial;
+}
+#main #popup #infos p{
+  width: 230px;
+  margin-left: 5px;
+}
+#main #popup img {
+  margin: 5px;
+}
+
+#register {
+  margin-top: 20px;
+  color: black;
+  width: 90px;
+  height: 35px;
+}
