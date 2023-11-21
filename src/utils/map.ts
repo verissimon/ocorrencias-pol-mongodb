@@ -1,7 +1,7 @@
 import * as L from 'leaflet'
 import { Types } from 'mongoose';
 
-export const map = L.map('map').setView([-6.89, -38.56], 15);
+export const map = L.map('map').setView([-6.89, -38.56], 17);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -16,6 +16,26 @@ export function toLngLat(coordinates: L.LatLng) {
 
 export function toLatLon(coordinates: number[]) {
     return { lat: coordinates[1], lng: coordinates[0] };
+}
+
+export function showMap() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            ( position ) => {
+                map.setView([position.coords.latitude, position.coords.longitude], 17);
+                L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
+            },
+            (err) => {
+                window.alert('Erro ao obter a localização do usuário: ' + err.message);
+            },
+            {
+                enableHighAccuracy: true
+            }
+        )
+    } else {
+        map.setView([-6.89, -38.56], 17);
+        window.alert('Seu navegador não suporta geolocalização!');
+    }
 }
 
 

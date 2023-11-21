@@ -1,5 +1,9 @@
-import { savePoint, getPoints, map, markers, toLngLat, showSinglePoint } from './utils/map';
+import { savePoint, getPoints, map, markers, toLngLat, showSinglePoint, showMap } from './utils/map';
 import { marker } from 'leaflet';
+
+window.addEventListener('load', () => {
+    showMap();
+})
 
 const form = document.querySelectorAll('input, select');
 
@@ -24,11 +28,11 @@ map.on('click', (evt) => {
     markers.push(marker(coordinates).addTo(map));
 })
 
-
 const btnRegister = document.querySelector('#register')
 
 btnRegister?.addEventListener('click', async (event) => {
     const ocorrencia = getFormValues();
+
     try{
         const coordinates = markers[markers.length - 1].getLatLng()
         await savePoint(ocorrencia, toLngLat(coordinates));
