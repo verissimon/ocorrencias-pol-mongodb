@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro de Ocorrências Policiais - API</title>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <link
+      rel="shortcut icon"
+      href="./assets/fav-icon.svg"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="./assets/style.css" />
+  </head>
+  <body>
+    <div id="main">
+      <div id="api">
+        <div id="header">
+          <image id="oficial" src="assets/policia.png"></image>
+          <h1>Ocorrências policiais</h1>
+        </div>
+
+        <div id="form">
+          <div id="mostrar">
+            <button id="btypes">Tipos</button>
+            <button id="bgraphics">Graficos</button>
+            <button id="btermal">Mapa Termal</button>
+          </div>
+
+          <a href="index.html"><button id="to">Voltar</button></a>
+        </div>
+      </div>
+
+      <div id="charts" style="background-color: #d4d4d4;">
+        <iframe class="graphics" src="https://charts.mongodb.com/charts-project-bd2-ezajd/embed/charts?id=655d2f5c-df21-4a91-8c5b-fa26aa401072&maxDataAge=300&theme=light&autoRefresh=true"></iframe>
+        <iframe class="graphics" src="https://charts.mongodb.com/charts-project-bd2-ezajd/embed/charts?id=655d32fb-96b0-41d6-80d1-8acd2bcc6d29&maxDataAge=300&theme=light&autoRefresh=true"></iframe>
+      </div>
+
+      <div id="heatmap">
+        <iframe style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);" width="640" height="480" src="https://charts.mongodb.com/charts-project-bd2-ezajd/embed/charts?id=655d343f-492b-497a-86e9-70d0bd6865cf&maxDataAge=300&theme=light&autoRefresh=true"></iframe>
+      </div>
+
+      <div id="types">
+        <iframe style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);" width="640" height="480" src="https://charts.mongodb.com/charts-project-bd2-ezajd/embed/charts?id=655d4c70-9ab1-4cfa-8746-82c8465dbb95&maxDataAge=300&theme=light&autoRefresh=true"></iframe>
+      </div>
+
+    </div>
+
+    <script src="showCharts.js"></script>
+  </body>
+</html>
