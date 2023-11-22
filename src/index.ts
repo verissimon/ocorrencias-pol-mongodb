@@ -1,9 +1,9 @@
 import { savePoint, getPoints, map, markers, toLngLat, showSinglePoint, showMap } from './utils/map';
 import { marker } from 'leaflet';
 
-window.addEventListener('load', () => {
-    showMap();
-})
+// window.addEventListener('load', () => {
+//     showMap();
+// })
 
 const form = document.querySelectorAll('input, select');
 
