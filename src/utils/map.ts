@@ -158,7 +158,7 @@ export async function deleteOccurrence(toDelete: { marker: L.Marker, point: Poin
         }
         return false
     } catch (error) {
-        alert('ERROR: ' + error);
+        alert(error);
         return false
     }
 }
@@ -195,7 +195,7 @@ export async function UpdateOccurrence(toUpdate: { marker: L.Marker, point: Poin
         }
         return false
     } catch (error) {
-        alert('ERROR: ' + error);
+        alert( error);
         return false
     }
 }
@@ -254,7 +254,7 @@ async function savePoint(infos: any, coordinates: number[]) {
         await showSinglePoint(point)
 
     } catch (error) {
-        alert('ERROR: ' + error);
+        alert(error);
     }
 }
 
@@ -274,7 +274,7 @@ async function getPoints(): Promise<Point[]> {
 
         return locals as Point[];
     } catch (error) {
-        alert('ERROR: ' + error);
+        alert(error);
         throw error;
     }
 }

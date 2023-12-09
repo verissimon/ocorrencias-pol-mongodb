@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon",
     "dev": "webpack-dev-server --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "cypress:open": "npx cypress open"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.16",
     "@types/leaflet": "^1.9.8",
+    "cypress": "^13.6.1",
     "nodemon": "^3.0.1",
     "ts-loader": "^9.5.0",
     "ts-node": "^10.9.1",
