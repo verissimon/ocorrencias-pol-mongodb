@@ -1,15 +1,15 @@
 import * as L from 'leaflet'
 import { Types } from 'mongoose';
 
-export const map = L.map('map')
-    .locate({setView: true, maxZoom: 15})
-    .on('locationfound', (e) => {
-        const userLocate = L.marker(e.latlng).addTo(map);
-        markers.push(userLocate);
-    })
-    .on('locationerror', (e) => {
-        alert('Acesso a localização negado');
-    })
+export const map = L.map('map').setView([-6.89, -38.56], 15)
+    // .locate({setView: true, maxZoom: 15})
+    // .on('locationfound', (e) => {
+    //     const userLocate = L.marker(e.latlng).addTo(map);
+    //     markers.push(userLocate);
+    // })
+    // .on('locationerror', (e) => {
+    //     alert('Acesso a localização negado');
+    // })
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
