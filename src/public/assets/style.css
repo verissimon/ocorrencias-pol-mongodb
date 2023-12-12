@@ -18,7 +18,8 @@ label {
 }
 
 .infoRaio {
-  margin-bottom: 30px;
+  margin-bottom: 15px;
+  margin-top: 70px;
 }
 
 input {
@@ -37,12 +38,6 @@ button {
   height: 40px;
   width: 140px;
   margin-top: 30px;
-}
-
-#km {
-  width: 250px;
-  margin-top: 79%;
-  margin-left: 20px;
 }
 
 #to {
