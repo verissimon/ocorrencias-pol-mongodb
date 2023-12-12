@@ -29,6 +29,7 @@ export function toLatLon(coordinates: number[]) {
 }
 
 interface Point {
+    map(arg0: (item: any) => HTMLLIElement): unknown
     _id: string | undefined
     titulo: string
     tipo: string

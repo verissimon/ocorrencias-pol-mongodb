@@ -88,13 +88,36 @@ function showFilteredPoints(
     radius: number
 ) {
     getFilteredOcrrId(latitude, longitude, radius).then(async (ids) => {
+        const divOcorrencias = document.querySelector('#listaOcorrencias');
+
+        const listaAntiga = divOcorrencias?.querySelector('ul');
+        if (listaAntiga) {
+            listaAntiga.remove();
+        }
+
+        const listaNova = document.createElement('ul')
+
         for (const id of ids) {
-            const p = await getCachedOcrr(id).catch((err) => console.log(err))
+        const p = await getCachedOcrr(id).catch((err) => console.log(err))
             if (p) { 
-                console.log(p)
-                // mostra ocorrencias com outro tipo de marcador
-                // funcao que atualiza estilo do marcador
+                const lista = document.createElement('ul');
+                const titulo = document.createElement('li');
+                titulo.textContent = `Título: ${p.titulo}`;
+
+                const tipo = document.createElement('li');
+                tipo.textContent = `Tipo: ${p.tipo}`;
+
+                const data = document.createElement('li');
+                data.textContent = `Data: ${p.data}`;
+
+                lista.appendChild(titulo);
+                lista.appendChild(tipo);
+                lista.appendChild(data);
+
+                listaNova.appendChild(lista);
             }
         }
+        divOcorrencias?.appendChild(listaNova);
     })
 }
+
