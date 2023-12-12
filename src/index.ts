@@ -1,73 +1,100 @@
-import { savePoint, getPoints, map, markers, toLngLat, showSinglePoint, showMap } from './utils/map';
-import { marker } from 'leaflet';
+import {
+    savePoint,
+    getPoints,
+    map,
+    markers,
+    toLngLat,
+    showSinglePoint,
+    getFilteredOcrrId,
+    getCachedOcrr,
+} from "./utils/map"
+import { marker } from "leaflet"
 
-// window.addEventListener('load', () => {
-//     showMap();
-// })
-
-const form = document.querySelectorAll('input, select');
+const form = document.querySelectorAll("input, select")
 
 function getFormValues() {
-    const obj: { [key: string]: string } = {};
+    const obj: { [key: string]: string } = {}
 
     form.forEach((element) => {
-        if ('value' in element) {
-            obj[element.id] = (element as HTMLInputElement).value;
+        if ("value" in element) {
+            obj[element.id] = (element as HTMLInputElement).value
         }
-    });
+    })
 
-    return obj;
+    return obj
 }
 
-map.on('click', (evt) => {
-    if (markers.length - 1 >= 0)
-        markers[markers.length - 1].remove()
-    const coordinates = evt.latlng;
-    console.log(evt.latlng);
+map.on("click", (evt) => {
+    if (markers.length - 1 >= 0) markers[markers.length - 1].remove()
+    const coordinates = evt.latlng
+    console.log(evt.latlng)
 
-    markers.push(marker(coordinates).addTo(map));
+    markers.push(marker(coordinates).addTo(map))
 })
 
-const btnSearch = document.querySelector('#geosearch')
-const btnRegister = document.querySelector('#register')
+const btnSearch = document.querySelector("#geosearch")
+const btnRegister = document.querySelector("#register")
 
-btnSearch?.addEventListener('click', async (event) => {
-    event.preventDefault(); 
+btnSearch?.addEventListener("click", async (event) => {
+    event.preventDefault()
 
-    const raio = document.querySelector('#kmInput') as HTMLInputElement;
+    const raio = document.querySelector("#kmInput") as HTMLInputElement
 
     try {
         if (markers.length > 0) {
-            const coordinates = markers[markers.length - 1].getLatLng();
-           // await geoSearch(toLngLat(coordinates), raio.valueAsNumber);
+            const coordinates = markers[markers.length - 1].getLatLng()
+            showFilteredPoints(
+                coordinates.lat,
+                coordinates.lng,
+                Number(raio.value)
+            )
         } else {
-            throw new Error('Selecione um local no mapa antes de realizar a busca');
+            throw new Error(
+                "Selecione um local no mapa antes de realizar a busca"
+            )
         }
     } catch (error) {
-        alert(error);
+        alert(error)
     }
-});
+})
 
-btnRegister?.addEventListener('click', async (event) => {
-    const ocorrencia = getFormValues();
+btnRegister?.addEventListener("click", async (event) => {
+    const ocorrencia = getFormValues()
 
-    try{
+    try {
         const coordinates = markers[markers.length - 1].getLatLng()
-        await savePoint(ocorrencia, toLngLat(coordinates));
+        await savePoint(ocorrencia, toLngLat(coordinates))
+    } catch (error) {
+        alert("Selecione um local no mapa antes de registrar")
     }
-    catch(error) {
-        alert('Selecione um local no mapa antes de registrar');
-    }
-});
+})
 
 function showPoints() {
-    getPoints().then(async (pnts) => {
-        for (const p of pnts) {
-            await showSinglePoint(p)
-        }
-    }).catch(err => {
-        console.error(err);
-    });
+    getPoints()
+        .then(async (pnts) => {
+            for (const p of pnts) {
+                await showSinglePoint(p)
+            }
+        })
+        .catch((err) => {
+            console.error(err)
+        })
 }
-showPoints();
+showPoints()
 
+function showFilteredPoints(
+    latitude: number,
+    longitude: number,
+    radius: number
+) {
+    getFilteredOcrrId(latitude, longitude, radius).then(async (ids) => {
+        for (const id of ids) {
+            const p = await getCachedOcrr(id).catch((err) => console.log(err))
+            if (p) { 
+                console.log(p)
+                // mostra ocorrencias com outro tipo de marcador
+                // funcao que atualiza estilo do marcador
+            }
+        }
+    })
+}

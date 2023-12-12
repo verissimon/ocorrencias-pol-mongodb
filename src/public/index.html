@@ -1,60 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registro de Ocorrências Policiais - API</title>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-    />
-    <link
-      rel="shortcut icon"
-      href="./assets/fav-icon.svg"
-      type="image/x-icon"
-    />
-    <link rel="stylesheet" href="./assets/style.css" />
-  </head>
-  <body>
-    <div id="main">
-      <div id="api">
-        <div id="header">
-          <image id="oficial" src="assets/policia.png"></image>
-          <h1>Ocorrências policiais</h1>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Registro de Ocorrências Policiais - API</title>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        />
+        <link
+            rel="shortcut icon"
+            href="./assets/fav-icon.svg"
+            type="image/x-icon"
+        />
+        <link rel="stylesheet" href="./assets/style.css" />
+    </head>
+    <body>
+        <div id="main">
+            <div id="api">
+                <div id="header">
+                    <image id="oficial" src="assets/policia.png"></image>
+                    <h1>Ocorrências policiais</h1>
+                </div>
+
+                <div id="form">
+                    <form method="post">
+                        <label for="title">Título:</label>
+                        <input type="text" id="titulo" /><br />
+
+                        <label for="type">Tipo da ocorrência:</label>
+                        <select name="tipos" id="tipo">
+                            <option value="Homicídio">Homicídio</option>
+                            <option value="Assalto">Assalto</option>
+                            <option value="Latrocínio">Latrocínio</option>
+                            <option value="Difamação">Difamação</option>
+                            <option value="Sonegacão fiscal">
+                                Sonegação fiscal
+                            </option>
+                            <option value="Outro">Outro</option></select
+                        ><br />
+
+                        <label for="date">Dia e hora:</label>
+                        <input type="datetime-local" id="data" /><br />
+
+                        <button id="register" type="button">Registrar</button>
+                    </form>
+                    <form method="get">
+                        <p class="infoRaio">
+                            * Para pesquisar ocorrências em um raio, selecione
+                            um ponto no mapa e insira o raio desejado.
+                        </p>
+                        <label id="raio">Raio em KM:</label>
+                        <input type="number" id="kmInput" /><br />
+                        <button id="geosearch">Pesquisar</button>
+                    </form>
+                    <a href="registros.html"
+                        ><button id="to">Registros ></button></a
+                    >
+                    <a href="pesquisa-raio.html"
+                        ><button id="km">Ocorrências por km ></button></a
+                    >
+                </div>
+            </div>
+
+            <div id="map"></div>
         </div>
 
-        <div id="form">
-          <form method="post">
-            <label for="title">Título:</label>
-            <input type="text" id="titulo" /><br>
-
-            <label for="type">Tipo da ocorrência:</label>
-            <select name="tipos" id="tipo">
-              <option value="Homicídio">Homicídio</option>
-              <option value="Assalto">Assalto</option>
-              <option value="Latrocínio">Latrocínio</option>
-              <option value="Difamação">Difamação</option>
-              <option value="Sonegacão fiscal">Sonegação fiscal</option>
-              <option value="Outro">Outro</option>
-            </select><br>
-
-            <label for="date">Dia e hora:</label>
-            <input type="datetime-local" id="data" /><br>
-
-            <button id="register" type="button">Registrar</button>
-
-          </form>
-
-          <a href="registros.html"><button id="to">Registros ></button></a>
-          <a href="pesquisa-raio.html"><button id="km">Ocorrências por km ></button></a>
-        </div>
-      </div>
-
-      <div id="mapRaio"></div>
-
-    </div>
-
-    <script type="module" src="bundle.js"></script>
-  </body>
+        <script type="module" src="bundle.js"></script>
+    </body>
 </html>
