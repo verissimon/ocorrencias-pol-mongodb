@@ -28,7 +28,25 @@ map.on('click', (evt) => {
     markers.push(marker(coordinates).addTo(map));
 })
 
+const btnSearch = document.querySelector('#geosearch')
 const btnRegister = document.querySelector('#register')
+
+btnSearch?.addEventListener('click', async (event) => {
+    event.preventDefault(); 
+
+    const raio = document.querySelector('#kmInput') as HTMLInputElement;
+
+    try {
+        if (markers.length > 0) {
+            const coordinates = markers[markers.length - 1].getLatLng();
+           // await geoSearch(toLngLat(coordinates), raio.valueAsNumber);
+        } else {
+            throw new Error('Selecione um local no mapa antes de realizar a busca');
+        }
+    } catch (error) {
+        alert(error);
+    }
+});
 
 btnRegister?.addEventListener('click', async (event) => {
     const ocorrencia = getFormValues();
