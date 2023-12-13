@@ -1,7 +1,7 @@
 import { redisClient } from "../database/redis"
 
-const EXPIRATION_TIME = 3600
-const DISTANCE_UNIT = "km"
+export const EXPIRATION_TIME = 3600
+export const DISTANCE_UNIT = "km"
 
 interface PointCached {
     _id: string
