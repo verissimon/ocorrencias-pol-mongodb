@@ -13,6 +13,15 @@ label {
   width: 185px;
 }
 
+#raio {
+  width: 120px;
+}
+
+.infoRaio {
+  margin-bottom: 15px;
+  margin-top: 70px;
+}
+
 input {
   width: 45%;
   color: black;
@@ -25,8 +34,14 @@ button {
   height: 45px;
 }
 
+#geosearch {
+  height: 40px;
+  width: 140px;
+  margin-top: 30px;
+}
+
 #to {
-  margin-top: 85%;
+  margin-top: 70%;
 }
 
 #main {
