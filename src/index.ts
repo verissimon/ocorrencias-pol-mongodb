@@ -101,10 +101,27 @@ function showFilteredPoints(
         const p = await getCachedOcrr(id).catch((err) => console.log(err))
             if (p) { 
                 const lista = document.createElement('ul');
-                const element = document.createElement('li');
-                element.textContent = `${p.titulo}\n${p.tipo}\n${p.data}`;
+                const elementoLi = document.createElement('li');
 
-                lista.appendChild(element);
+                const titulo = document.createElement('div');
+                titulo.textContent = `Título: ${p.titulo}`;
+
+                const tipo = document.createElement('div');
+                tipo.textContent = `Tipo: ${p.tipo}`;
+
+                const data = document.createElement('div');
+                data.textContent = `Data: ${p.data}`;
+
+                const espaco = document.createElement('br');
+
+
+                elementoLi.appendChild(titulo);
+                elementoLi.appendChild(tipo);
+                elementoLi.appendChild(data);
+                elementoLi.appendChild(espaco);
+
+
+                lista.appendChild(elementoLi);
 
                 listaNova.appendChild(lista);
             }
