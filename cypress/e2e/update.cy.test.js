@@ -15,6 +15,17 @@ describe('Index Page', () => {
         cy.get('#register').click();
     });
 
+    afterEach(() => {
+        cy.visit('http://localhost:8080/');
+        cy.wait(5000)
+        cy.get('#map').should('be.visible').then(() => {
+            cy.get('#map').click(testPoint.x, testPoint.y - 10);
+        });
+
+        cy.get('.delete').should('be.visible').then(() => {
+            cy.get('.delete').click();
+        });
+    })
     
     it('Deve ser capaz de atualizar um registro no mapa', () =>{
         cy.get('#map').should('be.visible').then(() => {

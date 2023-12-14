@@ -15,6 +15,20 @@ describe('Index Page', () => {
         cy.wait(1000)
     })
 
+    afterEach(function () {
+        cy.visit('http://localhost:8080/');
+        cy.wait(2000)
+        cy.get('#map').should('be.visible').then(() => {
+            cy.get('#map').click(testPoint.x, testPoint.y - 10);
+        });
+
+        cy.get('.delete').should('be.visible').then(() => {
+            cy.get('.delete').click();
+        });
+        
+        cy.reload();
+    });
+
     it('Deve ser capaz de atualizar um registro do mapa', () => {
         cy.wait(1000);
         cy.get('#map').should('be.visible').then(() => {
@@ -35,13 +49,12 @@ describe('Index Page', () => {
         });
 
         cy.reload();
-        cy.wait(2000);
+        cy.wait(5000);
         cy.get('#map').click(testPoint.x, testPoint.y - 15);
 
         cy.get('p').should('contain', 'Título: Example Atualizou');
         cy.get('p').should('contain', 'Tipo: Homicídio');
         // cy.get('p').should('contain', `Data: 01/01/2022, 12:00:00`);
-
     });
 
 });
