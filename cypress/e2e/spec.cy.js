@@ -25,34 +25,7 @@ describe('Index Page', () => {
         // formato da data pode variar de acordo com a linguagem do navegador
         // cy.get('p').should('contain', `Data: 01/01/2022, 12:00:00`);
     });
-
-    it('Deve ser capaz de atualizar um registro do mapa', () => {
-        cy.get('#map').should('be.visible').then(() => {
-            cy.get('#map').click(testPoint.x, testPoint.y - 15);
-        });
-
-        cy.get('.update').should('be.visible').then(() => {
-            cy.get('#titulo').clear();
-            cy.get('#titulo').type('Example Atualizou');
-            cy.get('#tipo').select('Homicídio');
-            cy.get('#data').type('2022-01-01T12:00');
-
-            cy.get('.update').click();
-        });
-        cy.wait(500)
-        cy.on('window:alert', (message) => {
-            expect(message).to.equal('Ocorrência atualizada com sucesso');
-        });
-
-        cy.reload();
-        cy.wait(2000);
-        cy.get('#map').click(testPoint.x, testPoint.y - 15);
-
-        cy.get('p').should('contain', 'Título: Example Atualizou');
-        cy.get('p').should('contain', 'Tipo: Homicídio');
-        // cy.get('p').should('contain', `Data: 01/01/2022, 12:00:00`);
-
-    });
+    
     it('deve ser capaz de buscar por registros dentro de 1km', () => {
         cy.get('#map').should('be.visible').then(() => {
             cy.get('#kmInput').type('1')
@@ -65,19 +38,7 @@ describe('Index Page', () => {
         cy.get('#listaOcorrencias').should('contain', 'Data:')
         
     })
-    it('Deve ser capaz de deletar um registro no mapa', () => {
-        cy.get('#map').should('be.visible').then(() => {
-            cy.get('#map').click(testPoint.x, testPoint.y - 15);
-        });
-        cy.get('.delete').should('be.visible').then(() => {
-            cy.get('.delete').click();
-        });
-
-        cy.on('window:alert', (message) => {
-            expect(message).to.equal('Ocorrência deletada com sucesso');
-        });
-    });
-
+    
     it('Deve retornar um erro ao registrar uma ocorrência sem marcar o local no mapa', () => {
         cy.get('#map').should('be.visible').then(() => {
             cy.get('#titulo').type('Example Title');

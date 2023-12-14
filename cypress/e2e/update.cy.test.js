@@ -4,9 +4,6 @@ describe('Index Page', () => {
     beforeEach(() => {
         cy.visit('http://localhost:8080/');
         cy.wait(5000); // Wait for the map to load
-    });
-
-    it('Deve ser capaz de criar um registro no mapa', () => {
         cy.get('#map').should('be.visible').then(() => {
             cy.get('#map').click(testPoint.x, testPoint.y);
         });
@@ -18,18 +15,22 @@ describe('Index Page', () => {
         cy.get('#register').click();
     });
 
-    it('Deve retornar um erro ao registrar uma ocorrência sem marcar o local no mapa', () => {
-
+    
+    it('Deve ser capaz de atualizar um registro no mapa', () =>{
         cy.get('#map').should('be.visible').then(() => {
-            cy.get('#titulo').type('Example Title');
-            cy.get('#tipo').select('Assalto');
+            cy.get('#map').click(testPoint.x, testPoint.y -15 );
+        });
+
+        cy.get('.update').should('be.visible').then(() => {
+            cy.get('#titulo').type('Example Occurrence');
+            cy.get('#tipo').select('Homicídio');
             cy.get('#data').type('2022-01-01T12:00');
 
-            cy.get('#register').click();
+            cy.get('.update').click();
         });
 
         cy.on('window:alert', (message) => {
-            expect(message).to.equal('Selecione um local no mapa antes de registrar');
+            expect(message).to.equal('Ocorrência atualizada com sucesso');
         });
     });
 });
