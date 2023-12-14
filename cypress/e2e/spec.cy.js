@@ -1,8 +1,11 @@
 describe('Index Page', () => {
     let testPoint = { x: 200, y: 400 }
-    it('Deve ser capaz de criar um registro no mapa', () => {
+    beforeEach(function () {
         cy.visit('http://localhost:8080/');
-        cy.wait(3000); // espera o mapa carregar
+        cy.wait(2000)
+    })
+    it('Deve ser capaz de criar um registro no mapa', () => {
+        cy.wait(1000); // espera o mapa carregar
         cy.get('#map').should('be.visible').then(() => {
             cy.get('#map').click(testPoint.x, testPoint.y);
         });
@@ -22,11 +25,8 @@ describe('Index Page', () => {
         // formato da data pode variar de acordo com a linguagem do navegador
         // cy.get('p').should('contain', `Data: 01/01/2022, 12:00:00`);
     });
-    
-    it('Deve ser capaz de atualizar um registro do mapa', () => {
-        cy.visit('http://localhost:8080/');
-        cy.wait(2000);
 
+    it('Deve ser capaz de atualizar um registro do mapa', () => {
         cy.get('#map').should('be.visible').then(() => {
             cy.get('#map').click(testPoint.x, testPoint.y - 15);
         });
@@ -51,13 +51,21 @@ describe('Index Page', () => {
         cy.get('p').should('contain', 'Título: Example Atualizou');
         cy.get('p').should('contain', 'Tipo: Homicídio');
         // cy.get('p').should('contain', `Data: 01/01/2022, 12:00:00`);
- 
+
     });
-
+    it('deve ser capaz de buscar por registros dentro de 1km', () => {
+        cy.get('#map').should('be.visible').then(() => {
+            cy.get('#kmInput').type('1')
+            cy.get('#map').click(testPoint.x, testPoint.y + 15);
+        });
+        cy.get('#geosearch').click()
+        cy.wait(5000) // espera a query retornar, a primeira vez demora pois seta o cache
+        cy.get('#listaOcorrencias').should('contain', 'Tipo:')
+        cy.get('#listaOcorrencias').should('contain', 'Título:')
+        cy.get('#listaOcorrencias').should('contain', 'Data:')
+        
+    })
     it('Deve ser capaz de deletar um registro no mapa', () => {
-        cy.visit('http://localhost:8080/');
-        cy.wait(2000); // espera o mapa carregar
-
         cy.get('#map').should('be.visible').then(() => {
             cy.get('#map').click(testPoint.x, testPoint.y - 15);
         });
@@ -71,9 +79,6 @@ describe('Index Page', () => {
     });
 
     it('Deve retornar um erro ao registrar uma ocorrência sem marcar o local no mapa', () => {
-        cy.visit('http://localhost:8080/');
-        cy.wait(2000);
-
         cy.get('#map').should('be.visible').then(() => {
             cy.get('#titulo').type('Example Title');
             cy.get('#tipo').select('Assalto');
@@ -86,5 +91,5 @@ describe('Index Page', () => {
             expect(message).to.equal('Selecione um local no mapa antes de registrar');
         });
     });
-    
+
 });
