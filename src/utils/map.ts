@@ -1,5 +1,6 @@
-import * as L from 'leaflet'
-import { Types } from 'mongoose';
+import * as L from "leaflet"
+import { Types } from "mongoose"
+import { createPopupContent } from "./createPopupContent"
 
 export const map = L.map('map').setView([-6.89, -38.56], 15)
     // .locate({setView: true, maxZoom: 15})
@@ -11,148 +12,62 @@ export const map = L.map('map').setView([-6.89, -38.56], 15)
     //     alert('Acesso a localização negado');
     // })
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    attribution:
+        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 }).addTo(map)
 
 export let markers = [] as L.Marker[]
 
 export function toLngLat(coordinates: L.LatLng) {
-    return [coordinates.lng, coordinates.lat];
+    return [coordinates.lng, coordinates.lat]
 }
 
 export function toLatLon(coordinates: number[]) {
-    return { lat: coordinates[1], lng: coordinates[0] };
+    return { lat: coordinates[1], lng: coordinates[0] }
 }
-
-export function showMap() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            ( position ) => {
-                map.setView([position.coords.latitude, position.coords.longitude], 17);
-                L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
-            },
-            (err) => {
-                window.alert('Erro ao obter a localização do usuário: ' + err.message);
-            },
-            {
-                enableHighAccuracy: true
-            }
-        )
-    } else {
-        map.setView([-6.89, -38.56], 17);
-        window.alert('Seu navegador não suporta geolocalização!');
-    }
-}
-
 
 interface Point {
-    _id: string | undefined;
-    titulo: string;
-    tipo: string;
-    data: Date;
-    geom: any;
+    map(arg0: (item: any) => HTMLLIElement): unknown
+    _id: string | undefined
+    titulo: string
+    tipo: string
+    data: Date
+    geom: any
 }
 
-type TOcorrenciaMapa = undefined | {
-    marker: L.Marker,
+type TOcorrenciaMapa =
+    | undefined
+    | {
+          marker: L.Marker
+          point: Point
+      }
+export let selectedOcrr: TOcorrenciaMapa = undefined
+
+export async function deleteOccurrence(toDelete: {
+    marker: L.Marker
     point: Point
-}
-let selectedOcrr: TOcorrenciaMapa = undefined
-
-function createPopupContent(point: Point) {
-    const div = document.createElement('div')
-    const titulo = document.createElement('p')
-    const tipo = document.createElement('p')
-    const data = document.createElement('p')
-    const button = document.createElement('button')
-    const buttonUpdate = document.createElement('button')
-    const updateAlert = document.createElement('p');
-
-    titulo.textContent = `Título: ${point.titulo}`;
-    titulo.style.fontWeight = 'bold';
-    titulo.style.fontSize = "12px";
-
-    tipo.textContent = `Tipo: ${point.tipo}`;
-    tipo.style.fontWeight = 'bold';
-    tipo.style.fontSize = "12px";
-
-
-    data.textContent = `Data: ${new Date(point.data).toLocaleString()}`;
-    data.style.fontWeight = 'bold';
-    data.style.fontSize = "12px";
-
-
-    updateAlert.textContent = '* Para atualizar uma ocorrência, insira os novos valores no formulário e clique no botão "Atualizar ocorrência" em seguida.'
-
-    button.type = 'button';
-    button.className = 'delete';
-    button.textContent = 'Deletar ocorrencia';
-
-    buttonUpdate.type = 'button';
-    buttonUpdate.className = 'update';
-    buttonUpdate.textContent = 'Atualizar ocorrencia';
-
-    div.appendChild(titulo);
-    div.appendChild(tipo);
-    div.appendChild(data);
-    div.appendChild(button);
-    div.appendChild(buttonUpdate);
-    div.appendChild(updateAlert);
-
-
-    button?.addEventListener('click', async () => {
-        if(!selectedOcrr){
-            console.error('toDelete é indefinido.');
-            return
-        }
-        const deletou = await deleteOccurrence(selectedOcrr)
-        if (deletou) {
-            const marker = selectedOcrr.marker;
-            marker.closePopup();
-            map.removeLayer(marker)
-        }
-    });
-
-    buttonUpdate?.addEventListener('click', async () => {
-
-        // Verificação para evitar toDelete indefinido
-        if (!selectedOcrr) {
-            console.error('toDelete é indefinido.');
-            return
-        }
-        const atualizou = await UpdateOccurrence(selectedOcrr)
-        if (atualizou) {
-            const marker = selectedOcrr.marker;
-            marker.closePopup();
-            const newPopupContent = createPopupContent(point);
-            marker.bindPopup(newPopupContent);
-            marker.openPopup();
-        }
-    })
-
-    return div
-}
-
-export async function deleteOccurrence(toDelete: { marker: L.Marker, point: Point }) {
-    const { point } = toDelete;
+}) {
+    const { point } = toDelete
 
     try {
-
         if (point && point._id) {
-            const resp = await fetch(`http://localhost:3000/ocorrencias/${point._id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-            })
+            const resp = await fetch(
+                `http://localhost:3000/ocorrencias/${point._id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
             if (!resp.ok) {
-                throw new Error('ao deletar ocorrência.');
+                throw new Error("ao deletar ocorrência.")
             }
 
-            console.log(`Ocorrência ${point._id} deletada.`);
+            console.log(`Ocorrência ${point._id} deletada.`)
             alert(`Ocorrência deletada com sucesso`)
             return true
         }
@@ -163,34 +78,42 @@ export async function deleteOccurrence(toDelete: { marker: L.Marker, point: Poin
     }
 }
 
-export async function UpdateOccurrence(toUpdate: { marker: L.Marker, point: Point }) {
-    const { point } = toUpdate;
+export async function UpdateOccurrence(toUpdate: {
+    marker: L.Marker
+    point: Point
+}) {
+    const { point } = toUpdate
 
     try {
-
         if (point && point._id) {
+            const titulo = (
+                document.getElementById("titulo") as HTMLInputElement
+            )?.value
+            const tipo = (document.getElementById("tipo") as HTMLInputElement)
+                ?.value
+            const data = (document.getElementById("data") as HTMLInputElement)
+                ?.value
 
-            const titulo = (document.getElementById('titulo') as HTMLInputElement)?.value;
-            const tipo = (document.getElementById('tipo') as HTMLInputElement)?.value;
-            const data = (document.getElementById('data') as HTMLInputElement)?.value;
+            if (titulo) point.titulo = titulo
+            if (tipo) point.tipo = tipo
+            if (data) point.data = new Date(data)
 
-            if (titulo) point.titulo = titulo;
-            if (tipo) point.tipo = tipo;
-            if (data) point.data = new Date(data);
-
-            const resp = await fetch(`http://localhost:3000/ocorrencias/${point._id}`, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(point)
-            })
+            const resp = await fetch(
+                `http://localhost:3000/ocorrencias/${point._id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(point),
+                }
+            )
             if (!resp.ok) {
-                throw new Error('ao atualizar ocorrência');
+                throw new Error("ao atualizar ocorrência")
             }
-            console.log(`Ocorrência ${point._id} atualizada.`);
-            alert(`Ocorrência atualizada com sucesso`);
+            console.log(`Ocorrência ${point._id} atualizada.`)
+            alert(`Ocorrência atualizada com sucesso`)
             return true
         }
         return false
@@ -204,29 +127,28 @@ export async function showSinglePoint(point: Point) {
     let marker: L.Marker
 
     if (!point.geom.coordinates) {
-        marker = L.marker(toLatLon(point.geom)).addTo(map);
-    }
-    else {
+        marker = L.marker(toLatLon(point.geom)).addTo(map)
+    } else {
         marker = L.marker(toLatLon(point.geom.coordinates)).addTo(map)
     }
     const popupContent = createPopupContent(point)
     marker.bindPopup(popupContent)
 
-    marker.on('click', async () => {
-        marker.getPopup()?.openPopup();
+    marker.on("click", async () => {
+        marker.getPopup()?.openPopup()
 
-        selectedOcrr = { marker, point };
-        console.log(selectedOcrr.point._id);
-        
-        const titulo = document.querySelector('#titulo') as HTMLInputElement;
+        selectedOcrr = { marker, point }
+        console.log(selectedOcrr.point._id)
+
+        const titulo = document.querySelector("#titulo") as HTMLInputElement
         const tipo = document.querySelector("#tipo") as HTMLSelectElement
         const data = document.querySelector("#data") as HTMLInputElement
-    
+
         //mostra os valores do marcador no input
-        titulo.value = point.titulo;
-        tipo.value = point.tipo;
-        data.value = new Date(point.data).toISOString().slice(0, 16);
-        })
+        titulo.value = point.titulo
+        tipo.value = point.tipo
+        data.value = new Date(point.data).toISOString().slice(0, 16)
+    })
 }
 
 async function savePoint(infos: any, coordinates: number[]) {
@@ -234,25 +156,24 @@ async function savePoint(infos: any, coordinates: number[]) {
         const point: Point = {
             _id: new Types.ObjectId().toString(),
             ...infos,
-            geom: coordinates
+            geom: coordinates,
         }
 
         const resp = await fetch(`http://localhost:3000/ocorrencias`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                Accept: "application/json",
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(point)
-        });
+            body: JSON.stringify(point),
+        })
 
         if (!resp.ok) {
-            throw new Error('ERROR IN REQUEST');
+            throw new Error("ERROR IN REQUEST")
         }
-        alert('SUCESS');
+        alert("SUCESS")
         markers[markers.length - 1].remove()
         await showSinglePoint(point)
-
     } catch (error) {
         alert(error);
     }
@@ -261,22 +182,71 @@ async function savePoint(infos: any, coordinates: number[]) {
 async function getPoints(): Promise<Point[]> {
     try {
         const resp = await fetch(`http://localhost:3000/ocorrencias`, {
-            method: 'GET',
+            method: "GET",
             headers: {
-                'Accept': 'application/json'
+                Accept: "application/json",
             },
-        });
+        })
 
         if (!resp.ok) {
-            throw new Error('ERROR IN REQUEST');
+            throw new Error("ERROR IN REQUEST")
         }
-        const locals = await resp.json();
+        const locals = await resp.json()
 
-        return locals as Point[];
+        return locals as Point[]
     } catch (error) {
-        alert(error);
-        throw error;
+        throw error
     }
 }
 
-export { savePoint, getPoints, Point };
+export async function getFilteredOcrrId(
+    latitude: number,
+    longitude: number,
+    radius: number
+): Promise<string[]> {
+    try {
+        const resp = await fetch(
+            `http://localhost:3000/ocorrencias/filter/?` +
+                new URLSearchParams({
+                    latitude: latitude.toString(),
+                    longitude: longitude.toString(),
+                    radius: radius.toString(),
+                }),
+            {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                },
+            }
+        )
+
+        if (!resp.ok) {
+            throw new Error("ERROR IN REQUEST")
+        }
+        const _idarray = await resp.json()
+        console.log(_idarray)
+        return _idarray as string[]
+    } catch (error) {
+        throw error
+    }
+}
+export async function getCachedOcrr(id: string): Promise<Point> {
+    try {
+        const resp = await fetch(`http://localhost:3000/ocorrencias/${id}`, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+            },
+        })
+
+        if (!resp.ok) {
+            throw new Error("ERROR IN REQUEST")
+        }
+        const local = await resp.json()
+        return local as Point
+    } catch (error) {
+        console.log(error);
+        throw error
+    }
+}
+export { savePoint, getPoints, Point }

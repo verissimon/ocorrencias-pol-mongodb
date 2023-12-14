@@ -13,6 +13,15 @@ label {
   width: 185px;
 }
 
+#raio {
+  width: 120px;
+}
+
+.infoRaio {
+  margin-bottom: 15px;
+  margin-top: 70px;
+}
+
 input {
   width: 45%;
   color: black;
@@ -25,8 +34,10 @@ button {
   height: 45px;
 }
 
-#to {
-  margin-top: 85%;
+#geosearch {
+  height: 40px;
+  width: 140px;
+  margin-top: 30px;
 }
 
 #main {
@@ -55,6 +66,11 @@ button {
 }
 #main #api #header img {
   width: 75px;
+}
+
+#listaOcorrencias {
+  overflow: auto;
+  height: 29vh;
 }
 
 #main #map {
@@ -161,9 +177,14 @@ button {
   margin: 5px;
 }
 
-#register {
+#register, #to {
   margin-top: 20px;
   color: black;
   width: 90px;
   height: 35px;
+}
+
+#to {
+  width: 120px;
+  margin-left: 20px;
 }
